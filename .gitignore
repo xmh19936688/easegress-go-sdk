@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+*.wasm
 
 # Test binary, built with `go test -c`
 *.test
@@ -11,5 +12,14 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Dependency directories
+vendor/
+
+# MacOS stuff.
+.DS_Store
+
+# GoLand IDE
+.idea/
+
+# vscode
+.vscode/
