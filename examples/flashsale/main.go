@@ -17,6 +17,7 @@ func init() {
 
 // tinygo build -o bk.wasm -target wasi ./examples/flashsale/
 // with test: tinygo build -tags "test" -o bk.wasm -target wasi ./examples/flashsale/
+// curl http://localhost:10080/flashsale -H Authorization:xmh
 func main() {
 	// keep empty
 }
@@ -52,24 +53,26 @@ func (program *FlashSale) Init(params map[string]string) {
 func (program *FlashSale) Run() int32 {
 	easegress.RespSetHeader("Content-Type", "application/json")
 
-	//if time.Now().Before(program.startTime) {
-	//	easegress.SetRespBody([]byte("not start yet." + v))
-	//	return 1
-	//}
-	//
-	//var id = easegress.GetReqHeader("Authorization")
-	//if easegress.GetString("id/"+id) == "true" {
-	//	easegress.SetRespBody([]byte("true." + v))
-	//	return 0
-	//}
-	//
-	//if easegress.CountKey("id/") < program.maxPermission {
-	//	if easegress.Rand() > program.blockRatio {
-	//		easegress.PutString("id/"+id, "true")
-	//		easegress.SetRespBody([]byte("lucky from wasm." + v))
-	//		return 0
-	//	}
-	//}
+	if time.Unix(easegress.GetUnixTimeInMs(), 0).Before(program.startTime) {
+		easegress.RespSetBody([]byte("not start yet."))
+		return 1
+	}
+
+	var id = easegress.ReqGetHeader("Authorization")
+	easegress.Log(easegress.Error, "id: "+id)
+	if easegress.ClusterGetString("id/"+id) == "true" {
+		easegress.RespSetBody([]byte("true."))
+		return 0
+	}
+
+	count := easegress.ClusterCountKey("id/")
+	if count < program.maxPermission {
+		if easegress.Rand() > program.blockRatio {
+			easegress.ClusterPutString("id/"+id, "true")
+			easegress.RespSetBody([]byte("lucky from wasm."))
+			return 0
+		}
+	}
 
 	easegress.RespSetBody([]byte("sold out."))
 	return 0
