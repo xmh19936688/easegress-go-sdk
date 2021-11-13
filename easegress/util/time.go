@@ -153,6 +153,9 @@ func Date(year int, month time.Month, day, hour, min, sec, nsec int, loc *time.L
 
 	unix := int64(abs) + (absoluteToInternal + internalToUnix)
 
+	// convert to UTC+8
+	unix -= 8 * 60 * 60
+
 	t := unixTime(unix, int32(nsec))
 	t.In(loc)
 	return t

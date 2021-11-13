@@ -42,12 +42,12 @@ func testParseTime() error {
 		{
 			String:  "2021-11-06 21:29:36",
 			Layout:  "2006-01-02 15:04:05",
-			Seconds: int64(1636234176),
+			Seconds: int64(1636205376),
 		},
 		{
 			String:  "2021-11-06T21:29:36",
 			Layout:  "2006-01-02T15:04:05",
-			Seconds: int64(1636234176),
+			Seconds: int64(1636205376),
 		},
 	}
 

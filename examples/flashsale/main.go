@@ -53,7 +53,7 @@ func (program *FlashSale) Init(params map[string]string) {
 func (program *FlashSale) Run() int32 {
 	easegress.RespSetHeader("Content-Type", "application/json")
 
-	if time.Unix(easegress.GetUnixTimeInMs(), 0).Before(program.startTime) {
+	if time.Unix(easegress.GetUnixTimeInMs()/1000, 0).Before(program.startTime) {
 		easegress.RespSetBody([]byte("not start yet."))
 		return 1
 	}
