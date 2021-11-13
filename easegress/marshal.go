@@ -48,7 +48,7 @@ func marshalString(str string) int32 {
 	s := make([]byte, len(str)+int(sizeI32)+1)
 	binary.LittleEndian.PutUint32(s[0:], uint32(len(str)+1))
 	copy(s[sizeI32:], str)
-	s[4+len(str)] = 0
+	s[int(sizeI32)+len(str)] = 0
 	return int32(uintptr(unsafe.Pointer(&s[0])))
 }
 
@@ -68,8 +68,10 @@ func unmarshalString(ptr int32) string {
 func unmarshalStringArray(ptr int32) []string {
 	size := readSize(ptr)
 	result := make([]string, size)
+	offset := int32(0)
 	for i := int32(0); i < size; i++ {
-		result[i] = unmarshalString(ptr + int32(sizeI32))
+		result[i] = unmarshalString(ptr + sizeI32 + offset)
+		offset += int32(len(result[i])) + sizeI32 + 1
 	}
 
 	wasm_free(ptr)

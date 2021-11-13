@@ -43,7 +43,7 @@ func Log(level LogLevel, msg string) {
 //go:wasm-module easegress
 //export host_get_unix_time_in_ms
 func host_get_unix_time_in_ms() int64
-func getUnixTimeInMs() int64 {
+func GetUnixTimeInMs() int64 {
 	return host_get_unix_time_in_ms()
 }
 
