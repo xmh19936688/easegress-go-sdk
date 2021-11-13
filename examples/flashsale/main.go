@@ -30,7 +30,6 @@ type FlashSale struct {
 }
 
 func (program *FlashSale) Init(params map[string]string) {
-
 	if v, ok := params["startTime"]; ok {
 		if t, err := util.ParseTime("2006-01-02 15:04:05", v); err == nil {
 			program.startTime = t

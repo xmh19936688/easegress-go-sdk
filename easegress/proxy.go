@@ -6,7 +6,7 @@ import (
 	"github.com/xmh19936688/easegress-go-sdk/easegress/test"
 )
 
-// 给host调用申请内存
+// alloc memory for host
 //export wasm_alloc
 func wasm_alloc(size int32) int32 {
 	buf := make([]byte, size)

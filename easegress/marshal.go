@@ -8,19 +8,13 @@ import (
 
 var sizeI32 = int32(unsafe.Sizeof(int32(1)))
 
-// 从前4个字节中读取长度
+// read length from the first 4 bytes
 func readSize(ptr int32) int32 {
 	var buf []byte
 	for i := int32(0); i < sizeI32; i++ {
 		p := (*byte)(unsafe.Pointer(uintptr(ptr + i)))
 		buf = append(buf, *p)
 	}
-
-	//ptr0 := (*byte)(unsafe.Pointer(uintptr(ptr)))
-	//ptr1 := (*byte)(unsafe.Pointer(uintptr(ptr + 1)))
-	//ptr2 := (*byte)(unsafe.Pointer(uintptr(ptr + 2)))
-	//ptr3 := (*byte)(unsafe.Pointer(uintptr(ptr + 3)))
-	//buf := []byte{*ptr0, *ptr1, *ptr2, *ptr3}
 
 	return int32(binary.LittleEndian.Uint32(buf[:]))
 }
@@ -44,7 +38,7 @@ func unmarshalData(ptr int32) []byte {
 }
 
 func marshalString(str string) int32 {
-	// 创建一个byte数组，前4个字节放字符串长度，后面放字符串，最后是空白字符
+	// make a byte array, the first 4 bytes for length of string, string data then, empty byte at last.
 	s := make([]byte, len(str)+int(sizeI32)+1)
 	binary.LittleEndian.PutUint32(s[0:], uint32(len(str)+1))
 	copy(s[sizeI32:], str)
@@ -55,8 +49,8 @@ func marshalString(str string) int32 {
 func unmarshalString(ptr int32) string {
 	size := readSize(ptr)
 
-	// 读取字符串数据
-	buf := make([]byte, size-1) // size-1是因为最后一个为空白字符
+	// read string data
+	buf := make([]byte, size-1) // `size-1` to ignore the empty byte at last
 	for i := int32(0); i < size-1; i++ {
 		buf[i] = *(*byte)(unsafe.Pointer(uintptr(ptr + int32(sizeI32) + i)))
 	}
