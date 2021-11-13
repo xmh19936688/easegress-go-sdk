@@ -2,6 +2,8 @@ package easegress
 
 import (
 	"unsafe"
+
+	"github.com/xmh19936688/easegress-go-sdk/easegress/test"
 )
 
 // 给host调用申请内存
@@ -26,6 +28,10 @@ func wasm_init(ptr int32) {
 		params[strs[i]] = strs[i+1]
 	}
 	program = createProgram(params)
+
+	if err := test.RunTest(); err != nil {
+		Log(Error, err.Error())
+	}
 }
 
 //export wasm_run

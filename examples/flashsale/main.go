@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/xmh19936688/easegress-go-sdk/easegress"
+	"github.com/xmh19936688/easegress-go-sdk/easegress/util"
 )
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 }
 
 // tinygo build -o bk.wasm -target wasi ./examples/flashsale/
+// with test: tinygo build -tags "test" -o bk.wasm -target wasi ./examples/flashsale/
 func main() {
 	// keep empty
 }
@@ -27,25 +29,24 @@ type FlashSale struct {
 }
 
 func (program *FlashSale) Init(params map[string]string) {
-	// TODO support time.Parse & strconv.ParseXxx
 
-	//if v, ok := params["startTime"]; ok {
-	//	if t, err := time.Parse("2006-01-02 15:04:05", v); err == nil {
-	//		program.startTime = t
-	//	}
-	//}
+	if v, ok := params["startTime"]; ok {
+		if t, err := util.ParseTime("2006-01-02 15:04:05", v); err == nil {
+			program.startTime = t
+		}
+	}
 
-	//if v, ok := params["blockRatio"]; ok {
-	//	if f, err := strconv.ParseFloat(v, 64); err == nil {
-	//		program.blockRatio = f
-	//	}
-	//}
+	if v, ok := params["blockRatio"]; ok {
+		if f, err := util.ParseFloat(v, 64); err == nil {
+			program.blockRatio = f
+		}
+	}
 
-	//if v, ok := params["maxPermission"]; ok {
-	//	if i, err := strconv.ParseInt(v, 10, 32); err == nil {
-	//		program.maxPermission = int32(i)
-	//	}
-	//}
+	if v, ok := params["maxPermission"]; ok {
+		if i, err := util.ParseInt(v, 10, 32); err == nil {
+			program.maxPermission = int32(i)
+		}
+	}
 }
 
 func (program *FlashSale) Run() int32 {
