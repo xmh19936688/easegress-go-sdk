@@ -1,44 +1,58 @@
-# easegress-go-sdk
+# Easegress Golang SDK
 
-## Usage
+- [Easegress Golang SDK](#easegress-golang-sdk)
+    - [Prerequisites](#prerequisites)
+    - [Local Development](#local-development)
+    - [Deploy and execute](#deploy-and-execute)
 
-```shell
-# compile demo
-tinygo build -o bk.wasm -target wasi ./examples/flashsale/
+This is the [Golang](https://golang.org/) SDK for [Easegress](https://github.com/megaease/easegress), it can be used to extend the ability of Easegress.
 
-# launch easegress-server
-/bin/easegress-server --debug
+## Prerequisites
 
-# create object
-cat <<EOF | /bin/egctl object create
----
-kind: HTTPServer
-name: http-server
-port: 10080
-keepAlive: true
-https: false
-rules:
-- paths:
-  - pathPrefix: /flashsale
-    backend: flash-sale-pipeline
+The following assumes that a recent version of [Golang](https://golang.org/) and compiler [TinyGo](https://tinygo.org//) are installed.
 
----
-name: flash-sale-pipeline
-kind: HTTPPipeline
-flow:
-- filter: wasm
-filters:
-- name: wasm
-  kind: WasmHost
-  maxConcurrency: 2
-  code: bk.wasm
-  timeout: 100ms
-  parameters:
-    startTime: "2021-11-08 21:50:21"
-    blockRatio: 0.5
-    maxPermission: 3
-EOF
+## Local Development
 
-# curl
-curl http://localhost:10080/flashsale -H Authorization:xmh
+1. Make a new directory and initialize a new module:
+
+```bash
+go mod init demo
 ```
+
+2. Init a go file:
+
+```bash
+echo '
+package main
+
+import (
+	"github.com/xmh19936688/easegress-go-sdk/easegress"
+)
+
+func init() {
+	easegress.Log(easegress.Info, "hello sdk")
+}
+
+func main() {
+	// keep empty
+}
+' > main.go
+```
+
+4. Install the dependency:
+
+```bash
+go mod tidy
+```
+
+5. Compile:
+
+```bash
+tinygo build -o demo.wasm -target wasi .
+```
+
+If everything is right, `demo.wasm` will be generated.
+
+## Deploy and execute
+
+Please refer [the documentation of `WasmHost`](https://github.com/megaease/easegress/blob/main/doc/wasmhost.md) for deploying and executing the compiled Wasm code.
